@@ -41,6 +41,18 @@ class MyCommand extends Command
     public function handle()
     {
 
+        $date = date('Y-m-d', time());
+        $usd = $this->getCurrencyForDate($date);
+        $curr = new Currency();
+        $curr->usd = $usd;
+        $curr->date = $date;
+        $curr->save();
+
+    }
+
+    private function initCurrenciesToDb()
+    {
+        
         for ($day = 6500; $day > 0; $day--) {
             $currency = new Currency();
             $date = date('Y-m-d', strtotime('-' . $day . ' day'));
@@ -48,7 +60,6 @@ class MyCommand extends Command
             $currency->usd = $this->getCurrencyForDate($date);
             $currency->save();
         }
-
     }
 
     private function getCurrencyForDate($date)
