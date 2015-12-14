@@ -11,6 +11,13 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+Route::resource('/', '\App\Http\Controllers\CurrencyController');
+
+Route::group(['prefix' => 'api'], function() {
+    Route::resource('currency', '\App\Http\Controllers\Api\CurrencyController');
 });
+
