@@ -1,10 +1,11 @@
 /**
  * Created by sasik on 12/14/15.
  */
+var global;
 d3.json('/api/currency', function (error, data) {
 
     var margin = {top: 40, right: 40, bottom: 40, left:40},
-        width = 600,
+        width = 5000,
         height = 500;
 
 
@@ -29,14 +30,20 @@ d3.json('/api/currency', function (error, data) {
         .orient('left')
         .tickPadding(8);
 
+    var zoom = d3.behavior.zoom()
+        .x(x)
+        .y(y)
+        .scaleExtent([1, 32])
+        .on("zoom", zoomed);
 
     var svg = d3.select('.container')
         .append('svg')
         .attr('width', width)
         .attr('height', height)
         .append('g')
-        .attr('transform', 'translate(' + margin.left + ', ' +  margin.top +')');
-    ;
+        .attr('transform', 'translate(' + margin.left + ', ' +  margin.top +')')
+        .call(zoom);
+
 
 
     svg.selectAll('.chart')
@@ -45,8 +52,9 @@ d3.json('/api/currency', function (error, data) {
         .attr('class', 'bar')
         .attr('x', function(d) { return x(new Date(d.date)); })
         .attr('y', function(d) { return height - margin.top - margin.bottom - (height - margin.top - margin.bottom - y(d.usd)) })
-        .attr('width', 10)
-        .attr('height', function(d) { return height - margin.top - margin.bottom - y(d.usd) });
+        .attr('width', 30)
+        .attr('height', function(d) { return height - margin.top - margin.bottom - y(d.usd) })
+        ;
 
     svg.append('g')
         .attr('class', 'x axis')
@@ -56,4 +64,12 @@ d3.json('/api/currency', function (error, data) {
     svg.append('g')
         .attr('class', 'y axis')
         .call(yAxis);
+
+
+
+
+    function zoomed() {
+        svg.select(".x.axis").call(xAxis);
+        svg.select(".y.axis").call(yAxis);
+    }
 });
